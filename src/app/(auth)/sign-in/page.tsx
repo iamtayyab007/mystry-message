@@ -33,12 +33,13 @@ export default function page() {
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    console.log("", data);
     const response = await signIn("credentials", {
       redirect: false,
       identifier: data.identifier,
       password: data.password,
     });
-
+    console.log("", response);
     if (response?.error) {
       setError("Invalid email or password");
       toast("Login failed", {

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   await dbConnect();
   try {
-    const { username, verifyCode } = await request.json();
+    const { username, code } = await request.json();
 
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
@@ -18,8 +18,8 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-    const isCodeValid = user.verifyCode === verifyCode;
-    const isCodeNotExpired = new Date(user.verifyCode) > new Date();
+    const isCodeValid = user.verifyCode === code;
+    const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
 
     if (isCodeValid && isCodeNotExpired) {
       user.isVerified = true;
@@ -49,5 +49,11 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    return Response.json(
+      { success: false, message: "Error verifying user" },
+      { status: 500 }
+    );
+  }
 }

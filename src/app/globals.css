@@ -121,3 +121,7 @@
     @apply bg-background text-foreground;
   }
 }
+.toast-black-white {
+  background-color: black;
+  color: white;
+}

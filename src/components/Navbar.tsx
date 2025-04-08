@@ -21,14 +21,15 @@ export const Navbar = () => {
               <span className="mr-4">
                 Welcome, {user.username || user.email}
               </span>
-              <Button className="w-full md:w-auto" onClick={() => signOut()}>
+              <Button
+                className="w-full md:w-auto cursor-pointer"
+                onClick={() => signOut()}
+              >
                 Logout
               </Button>
             </>
           ) : (
-            <Link href="/sign-in">
-              <Button className="w-full md:w-auto">Login</Button>
-            </Link>
+            <Link href="/sign-in">Login</Link>
           )}
         </div>
       </nav>

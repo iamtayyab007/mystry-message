@@ -1,3 +1,4 @@
+import { console } from "inspector";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -24,6 +25,7 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier },
             ],
           });
+          console.log("user data", user);
           if (!user) {
             throw new Error("No user found with this email");
           }
@@ -50,7 +52,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token._id = user._id?.toString();
         token.isVerified = user.isVerified;
-        token.isAcceptingMessages = user.isAcceptingMessages;
+        token.isAcceptingMessage = user.isAcceptingMessage;
         token.username = user.username;
       }
       return token;
@@ -59,7 +61,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
-        session.user.isAcceptingMessages = token.isAcceptingMessages;
+        session.user.isAcceptingMessage = token.isAcceptingMessage;
         session.user.username = token.username;
       }
       return session;

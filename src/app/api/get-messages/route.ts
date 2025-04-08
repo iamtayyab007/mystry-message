@@ -8,7 +8,9 @@ import mongoose from "mongoose";
 export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const user: User = session?.user;
+
+  const _user: User = session?.user;
+
   if (!session || !session.user) {
     return Response.json(
       {
@@ -18,15 +20,20 @@ export async function GET(request: Request) {
       { status: 401 }
     );
   }
-  const userId = new mongoose.Types.ObjectId(user.id);
+
+  const userId = new mongoose.Types.ObjectId(_user._id);
+  const foundUser = await UserModel.findById(userId);
+  console.log("foundUser", foundUser);
+  console.log("foundUser.messages", foundUser?.messages);
+
   try {
     const user = await UserModel.aggregate([
-      { $match: { id: userId } },
+      { $match: { _id: userId } },
       { $unwind: "$messages" },
       { $sort: { "messages.createdAt": -1 } },
       { $group: { _id: "$_id", messages: { $push: "$messages" } } },
     ]);
-    if (!user || user.length === 0) {
+    if (!user) {
       return Response.json(
         {
           success: false,
@@ -34,11 +41,20 @@ export async function GET(request: Request) {
         },
         { status: 401 }
       );
+    } else if (!user || user.length === 0) {
+      return Response.json(
+        {
+          success: false,
+          message: "No Messages Found for the user",
+        },
+        { status: 404 }
+      );
     }
+
     return Response.json(
       {
         success: true,
-        message: user[0].messages,
+        messages: user[0].messages,
       },
       { status: 201 }
     );

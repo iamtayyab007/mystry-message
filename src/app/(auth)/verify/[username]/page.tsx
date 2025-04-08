@@ -29,6 +29,7 @@ const verifyAccount = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
+    console.log("Form data submitted:", data); // Add this line for debugging
     try {
       const response = await axios.post("/api/verify-code", {
         username: params.username,
@@ -37,7 +38,7 @@ const verifyAccount = () => {
       toast("success", {
         description: response.data.message,
       });
-      router.replace("sign-in");
+      router.replace("/sign-in");
     } catch (error) {
       console.error("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
