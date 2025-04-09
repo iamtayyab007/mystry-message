@@ -42,4 +42,5 @@ next-env.d.ts
 
 # project files
 .env
-suggest-messages
+.env
+app/api/suggest-messages
